@@ -1,0 +1,215 @@
+import { randomUUID } from 'node:crypto'
+import { once } from 'node:events'
+import {
+  type AnyProcedure,
+  ApiError,
+  type ApplicationContext,
+  type Connection,
+  type Container,
+  Scope,
+  ServerDownStream,
+  ServerUpStream,
+  type Service,
+  SubscriptionResponse,
+  onAbort,
+  providers,
+} from '@nmtjs/application'
+import {
+  type ApiBlobMetadata,
+  type EncodeRpcContext,
+  MessageType,
+  TransportType,
+  decodeNumber,
+  encodeNumber,
+} from '@nmtjs/common'
+import {
+  App,
+  type HttpResponse,
+  SSLApp,
+  type TemplatedApp,
+} from 'uWebSockets.js'
+import { connectionData } from './providers.ts'
+import type { HttpTransportOptions } from './types.ts'
+import { InternalError, getFormat, getRequestData } from './utils.ts'
+
+export class HttpTransportServer {
+  protected server!: TemplatedApp
+  protected readonly transportType = TransportType.HTTP
+
+  constructor(
+    protected readonly application: ApplicationContext,
+    protected readonly options: HttpTransportOptions,
+  ) {
+    this.server = this.options.tls ? SSLApp(options.tls!) : App()
+
+    this.server
+      .get('/healthy', (res) => {
+        res.cork(() => {
+          // cors
+          res.writeHeader('Access-Control-Allow-Origin', '*')
+          res.writeHeader('Access-Control-Allow-Headers', 'Content-Type')
+          res.writeHeader('Access-Control-Allow-Methods', 'GET')
+          res.writeHeader('Content-Type', 'text/plain')
+          res.end('OK')
+        })
+      })
+      .post('/api/:service/:procudure', async (res, req) => {
+        const ac = new AbortController()
+        res.onAborted(() => ac.abort())
+        const tryEnd = (cb) => {
+          if (!ac.signal.aborted) res.cork(cb)
+        }
+
+        try {
+          const requestData = getRequestData(req)
+
+          const serviceName = req.getParameter(0)!
+          const procedureName = req.getParameter(1)!
+
+          const service = this.application.registry.services.get(serviceName)
+
+          if (!service) throw new Error(`Service ${serviceName} not found`)
+          if (this.transportType in service.contract.transports === false)
+            throw new Error(`Service ${serviceName} not supported`)
+
+          const format = getFormat(requestData, this.application.format)
+          const body = await this.getBody(res)
+          const container = this.application.container.createScope(Scope.Call)
+          const payload = body.byteLength ? format.decoder.decode(body) : null
+          const connection = this.application.connections.add({
+            services: [serviceName],
+            type: this.transportType,
+            subscriptions: new Map(),
+          })
+
+          container.provide(connectionData, {
+            query: requestData.query,
+            headers: requestData.headers,
+            proxiedRemoteAddress: Buffer.from(
+              res.getProxiedRemoteAddressAsText(),
+            ).toString(),
+            remoteAddress: Buffer.from(res.getRemoteAddressAsText()).toString(),
+          })
+          container.provide(providers.connection, connection)
+          container.provide(providers.signal, ac.signal)
+
+          const { procedure } = this.api.find(
+            serviceName,
+            procedureName,
+            this.transportType,
+          )
+
+          try {
+            const response = await this.handleRPC({
+              connection,
+              service,
+              procedure,
+              container,
+              signal: ac.signal,
+              payload,
+            })
+
+            tryEnd(() =>
+              res
+                .writeStatus('200 OK')
+                .writeHeader('Content-Type', format.encoder.contentType)
+                .end(format.encoder.encode({ error: null, result: response })),
+            )
+          } catch (error: any) {
+            if (error instanceof ApiError) {
+              tryEnd(() =>
+                res
+                  .writeStatus('200 OK')
+                  .end(format.encoder.encode({ error, result: null })),
+              )
+            } else {
+              tryEnd(() =>
+                res.writeStatus('200 OK').end(
+                  format.encoder.encode({
+                    error: InternalError(),
+                    result: null,
+                  }),
+                ),
+              )
+            }
+            this.logError(error)
+          } finally {
+            this.application.connections.remove(connection)
+            this.handleContainerDisposal(container)
+          }
+        } catch (error: any) {
+          this.logError(error)
+          tryEnd(() =>
+            res.writeStatus('500 Internal Server Error').endWithoutBody(),
+          )
+        }
+      })
+  }
+
+  async start() {
+    return new Promise<void>((resolve, reject) => {
+      const hostname = this.options.hostname ?? '127.0.0.1'
+      this.server.listen(hostname, this.options.port!, (socket) => {
+        if (socket) {
+          this.logger.info(
+            'Server started on %s:%s',
+            hostname,
+            this.options.port!,
+          )
+          resolve()
+        } else {
+          reject(new Error('Failed to start server'))
+        }
+      })
+    })
+  }
+
+  async stop() {
+    this.server.close()
+  }
+
+  protected get api() {
+    return this.application.api
+  }
+
+  protected get logger() {
+    return this.application.logger
+  }
+
+  protected async logError(
+    cause: Error,
+    message = 'Unknown error while processing request',
+  ) {
+    this.logger.error(new Error(message, { cause }))
+  }
+
+  protected handleContainerDisposal(container: Container) {
+    container.dispose()
+  }
+
+  protected async handleRPC(options: {
+    connection: Connection
+    service: Service
+    procedure: AnyProcedure
+    container: Container
+    signal: AbortSignal
+    payload: any
+  }) {
+    return await this.api.call({
+      ...options,
+      transport: this.transportType,
+    })
+  }
+
+  protected async getBody(res: HttpResponse) {
+    return new Promise<Buffer>((resolve) => {
+      const chunks: Buffer[] = []
+      res.onData((chunk, isLast) => {
+        chunks.push(Buffer.from(chunk))
+        if (isLast) {
+          resolve(Buffer.concat(chunks))
+        }
+      })
+    })
+  }
+}

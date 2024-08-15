@@ -1,0 +1,28 @@
+{
+  "name": "@nmtjs/http-client",
+  "type": "module",
+  "module": "index.ts",
+  "publishConfig": {
+    "module": "./dist/index.js",
+    "types": "./index.ts"
+  },
+  "scripts": {
+    "build": "neemata-build -p neutral ./index.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@nmtjs/common": "^0.0.1",
+    "@nmtjs/client": "^0.0.1"
+  },
+  "devDependencies": {
+    "@nmtjs/common": "^0.0.1",
+    "@nmtjs/client": "^0.0.1"
+  },
+  "files": [
+    "index.ts",
+    "dist",
+    "tsconfig.json",
+    "LICENSE.md",
+    "README.md"
+  ]
+}
