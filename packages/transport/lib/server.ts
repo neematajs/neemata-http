@@ -1,5 +1,3 @@
-import { randomUUID } from 'node:crypto'
-import { once } from 'node:events'
 import {
   type AnyProcedure,
   ApiError,
@@ -7,21 +5,10 @@ import {
   type Connection,
   type Container,
   Scope,
-  ServerDownStream,
-  ServerUpStream,
   type Service,
-  SubscriptionResponse,
-  onAbort,
   providers,
 } from '@nmtjs/application'
-import {
-  type ApiBlobMetadata,
-  type EncodeRpcContext,
-  MessageType,
-  TransportType,
-  decodeNumber,
-  encodeNumber,
-} from '@nmtjs/common'
+import { TransportType } from '@nmtjs/common'
 import {
   App,
   type HttpResponse,
@@ -82,6 +69,8 @@ export class HttpTransportServer {
             subscriptions: new Map(),
           })
 
+          const responseHeaders = new Headers()
+
           container.provide(connectionData, {
             query: requestData.query,
             headers: requestData.headers,
@@ -89,6 +78,7 @@ export class HttpTransportServer {
               res.getProxiedRemoteAddressAsText(),
             ).toString(),
             remoteAddress: Buffer.from(res.getRemoteAddressAsText()).toString(),
+            responseHeaders,
           })
           container.provide(providers.connection, connection)
           container.provide(providers.signal, ac.signal)
@@ -109,12 +99,13 @@ export class HttpTransportServer {
               payload,
             })
 
-            tryEnd(() =>
+            tryEnd(() => {
               res
                 .writeStatus('200 OK')
                 .writeHeader('Content-Type', format.encoder.contentType)
-                .end(format.encoder.encode({ error: null, result: response })),
-            )
+              responseHeaders.forEach((v, k) => res.writeHeader(k, v))
+              res.end(format.encoder.encode({ error: null, result: response }))
+            })
           } catch (error: any) {
             if (error instanceof ApiError) {
               tryEnd(() =>

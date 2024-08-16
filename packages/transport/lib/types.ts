@@ -14,4 +14,5 @@ export type HttpConnectionData = {
   query: URLSearchParams
   remoteAddress: string
   proxiedRemoteAddress: string
+  responseHeaders: Headers
 }
