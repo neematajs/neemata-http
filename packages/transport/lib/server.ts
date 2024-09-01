@@ -6,7 +6,7 @@ import {
   type Container,
   Scope,
   type Service,
-  providers,
+  injectables,
 } from '@nmtjs/application'
 import { TransportType } from '@nmtjs/common'
 import {
@@ -15,7 +15,7 @@ import {
   SSLApp,
   type TemplatedApp,
 } from 'uWebSockets.js'
-import { connectionData } from './providers.ts'
+import { connectionData } from './injectables.ts'
 import type { HttpTransportOptions } from './types.ts'
 import { InternalError, getFormat, getRequestData } from './utils.ts'
 
@@ -80,8 +80,8 @@ export class HttpTransportServer {
             remoteAddress: Buffer.from(res.getRemoteAddressAsText()).toString(),
             responseHeaders,
           })
-          container.provide(providers.connection, connection)
-          container.provide(providers.signal, ac.signal)
+          container.provide(injectables.connection, connection)
+          container.provide(injectables.callSignal, ac.signal)
 
           const { procedure } = this.api.find(
             serviceName,
