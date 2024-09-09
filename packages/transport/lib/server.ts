@@ -81,7 +81,6 @@ export class HttpTransportServer {
             responseHeaders,
           })
           container.provide(injectables.connection, connection)
-          container.provide(injectables.callSignal, ac.signal)
 
           const { procedure } = this.api.find(
             serviceName,
