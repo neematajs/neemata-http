@@ -182,10 +182,10 @@ export class HttpTransportServer {
     // TODO: this should be configurable
     const origin = req.getHeader('origin')
     if (!origin) return
-    res.headers.set('Access-Control-Allow-Origin', origin)
-    res.headers.set('Access-Control-Allow-Headers', 'Content-Type')
-    res.headers.set('Access-Control-Allow-Methods', 'GET, POST')
-    res.headers.set('Access-Control-Allow-Credentials', 'true')
+    res.writeHeader('Access-Control-Allow-Origin', origin)
+    res.writeHeader('Access-Control-Allow-Headers', 'Content-Type')
+    res.writeHeader('Access-Control-Allow-Methods', 'GET, POST')
+    res.writeHeader('Access-Control-Allow-Credentials', 'true')
   }
 
   protected handleContainerDisposal(container: Container) {
