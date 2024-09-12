@@ -45,14 +45,11 @@ export class HttpTransportServer {
         const ac = new AbortController()
         res.onAborted(() => ac.abort())
         const tryEnd = (cb) => {
-          if (!ac.signal.aborted)
-            res.cork(() => {
-              this.applyCors(res, req)
-              return cb()
-            })
+          if (!ac.signal.aborted) res.cork(cb)
         }
 
         try {
+          this.applyCors(res, req)
           const requestData = getRequestData(req)
 
           const serviceName = req.getParameter(0)!
