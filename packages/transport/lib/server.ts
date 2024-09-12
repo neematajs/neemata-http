@@ -11,6 +11,7 @@ import {
 import { TransportType } from '@nmtjs/common'
 import {
   App,
+  type HttpRequest,
   type HttpResponse,
   SSLApp,
   type TemplatedApp,
@@ -30,21 +31,25 @@ export class HttpTransportServer {
     this.server = this.options.tls ? SSLApp(options.tls!) : App()
 
     this.server
-      .get('/healthy', (res) => {
-        res.cork(() => {
-          // cors
-          res.writeHeader('Access-Control-Allow-Origin', '*')
-          res.writeHeader('Access-Control-Allow-Headers', 'Content-Type')
-          res.writeHeader('Access-Control-Allow-Methods', 'GET')
-          res.writeHeader('Content-Type', 'text/plain')
-          res.end('OK')
-        })
+      .options('/*', (res, req) => {
+        this.applyCors(res, req)
+        res.writeStatus('200 OK')
+        res.endWithoutBody()
+      })
+      .get('/healthy', (res, req) => {
+        this.applyCors(res, req)
+        res.writeHeader('Content-Type', 'text/plain')
+        res.end('OK')
       })
       .post('/api/:service/:procudure', async (res, req) => {
         const ac = new AbortController()
         res.onAborted(() => ac.abort())
         const tryEnd = (cb) => {
-          if (!ac.signal.aborted) res.cork(cb)
+          if (!ac.signal.aborted)
+            res.cork(() => {
+              this.applyCors(res, req)
+              return cb()
+            })
         }
 
         try {
@@ -171,6 +176,16 @@ export class HttpTransportServer {
     message = 'Unknown error while processing request',
   ) {
     this.logger.error(new Error(message, { cause }))
+  }
+
+  protected applyCors(res: HttpResponse, req: HttpRequest) {
+    // TODO: this should be configurable
+    const origin = req.getHeader('origin')
+    if (!origin) return
+    res.headers.set('Access-Control-Allow-Origin', origin)
+    res.headers.set('Access-Control-Allow-Headers', 'Content-Type')
+    res.headers.set('Access-Control-Allow-Methods', 'GET, POST')
+    res.headers.set('Access-Control-Allow-Credentials', 'true')
   }
 
   protected handleContainerDisposal(container: Container) {
