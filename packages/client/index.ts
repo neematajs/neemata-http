@@ -75,11 +75,11 @@ export class HttpClient extends ClientTransport {
       }
     } else {
       const buf = await response.arrayBuffer()
-      const { error, response: rpcResponse } = this.client.format.decode(buf)
+      const { error, result } = this.client.format.decode(buf)
       if (error) {
         return { success: false, error }
       } else {
-        return { success: true, value: rpcResponse }
+        return { success: true, value: result }
       }
     }
   }
