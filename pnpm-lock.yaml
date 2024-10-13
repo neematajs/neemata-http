@@ -40,10 +40,10 @@ importers:
         version: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/442087c0a01bf146acb7386910739ec81df06700
     devDependencies:
       '@nmtjs/application':
-        specifier: ^0.4.2s
+        specifier: ^0.4.2
         version: 0.4.2(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
       '@nmtjs/common':
-        specifier: ^0.4.2s
+        specifier: ^0.4.2
         version: 0.4.2
       '@types/node':
         specifier: ^18.0.0
