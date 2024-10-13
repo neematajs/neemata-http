@@ -27,11 +27,11 @@ importers:
   packages/client:
     devDependencies:
       '@nmtjs/client':
-        specifier: ^0.3.8
-        version: 0.3.8(@nmtjs/common@0.3.8)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
+        specifier: ^0.4.2
+        version: 0.4.2(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
       '@nmtjs/common':
-        specifier: ^0.3.8
-        version: 0.3.8
+        specifier: ^0.4.2
+        version: 0.4.2
 
   packages/transport:
     dependencies:
@@ -40,11 +40,11 @@ importers:
         version: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/51ae1d1fd92dff77cbbdc7c431021f85578da1a6
     devDependencies:
       '@nmtjs/application':
-        specifier: ^0.3.8
-        version: 0.3.8(@nmtjs/common@0.3.8)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
+        specifier: ^0.4.2s
+        version: 0.4.2(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
       '@nmtjs/common':
-        specifier: ^0.3.8
-        version: 0.3.8
+        specifier: ^0.4.2s
+        version: 0.4.2
       '@types/node':
         specifier: ^18.0.0
         version: 18.19.50
@@ -249,12 +249,8 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.0':
     resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
 
-  '@nmtjs/application@0.3.8':
-    resolution: {integrity: sha512-txw8sbasxXEhtvcZhDKOYbRd5j2bwgZB0QESZ2CwzQz4lBOoA/tKRWM+esmGDBhcodpeD1MQ17EvAX/vAVAwCQ==}
-    peerDependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/contract': 0.3.8
-      '@nmtjs/type': 0.3.8
+  '@nmtjs/application@0.4.2':
+    resolution: {integrity: sha512-wLgF67Lfpy1brODxVpZNCflrmoNm6hp78HGiwhpmRvplrmujKs9IdsZpRU1ctu8waWqanP2iVi1I8lmZ0QsV4A==}
 
   '@nmtjs/builder@https://codeload.github.com/neematajs/builder/tar.gz/a9139aa321ebf2054ce2f7d26e40a346338be149':
     resolution: {tarball: https://codeload.github.com/neematajs/builder/tar.gz/a9139aa321ebf2054ce2f7d26e40a346338be149}
@@ -262,26 +258,19 @@ packages:
     engines: {node: '>= 18'}
     hasBin: true
 
-  '@nmtjs/client@0.3.8':
-    resolution: {integrity: sha512-1rpzVqBpBvL96H7ndPMJvGRzurofxpZlZIrQ2OlaP9qrEKyP9gd3xRdWLINknC2AvDze8S2WBOIA9h/OcvQHrQ==}
-    peerDependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/contract': 0.3.8
-      '@nmtjs/type': 0.3.8
+  '@nmtjs/client@0.4.2':
+    resolution: {integrity: sha512-pLwluaYqINxO9jAMHkqLBxc3tZZUfxPA/ZJeNvWyw3WIKI00Pz3xmIjCwwkDecB8MFTj5o8IP8jY8M9zyS6XrQ==}
 
-  '@nmtjs/common@0.3.8':
-    resolution: {integrity: sha512-x9SNm6qT3rPesSACxJYsKs43gsUqwl/hG27B0JXJpueAGROdSOiZNCHynnf8LwKEtMaxnyIka8IkdTJ413y6Ow==}
+  '@nmtjs/common@0.4.2':
+    resolution: {integrity: sha512-kXiTgYEhISXx7uaFY6kyVNeHZ0FQuYZ+IXSiyPFfCqOFrrQIEgI6yM1LooKHi77nZBwWzzd8dRR+ie9RS6Yl2w==}
 
-  '@nmtjs/contract@0.3.8':
-    resolution: {integrity: sha512-siC4NTzV+naPL38DJxlW694FqwpciUbdsMZT+PUqB6fj6RJmlbqR+2SCcN9g6yCfQFye9Iu80GMpfsgXRH4NOg==}
-    peerDependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/type': 0.3.8
+  '@nmtjs/contract@0.4.2':
+    resolution: {integrity: sha512-SzdVgKQ0c+jOJtFLChvYYASbQ7Yh/HI4N8C/4l+yZWkRLru+2o27UDmKIdXBHgBnG4B8r96EjyeiOxk2GkxliA==}
 
-  '@nmtjs/type@0.3.8':
-    resolution: {integrity: sha512-mzLUOup1n9kJuhTiy1zmhWOIUPm9CPbZD5WbwZibMMNhJDOyTURYdAHr3DvA5qcd2sd3ZXtTptapdOQhtv4Kcg==}
+  '@nmtjs/type@0.4.2':
+    resolution: {integrity: sha512-Z2Beuaote3XJ+FadBu70I+WVSiuwgohr75U319PZF1O/e4MIeqLZOKS4PWXE8/X2L4cV8npI16AvrD3oaCpBeg==}
     peerDependencies:
-      '@nmtjs/common': 0.3.8
+      '@nmtjs/common': 0.4.2
       '@sinclair/typebox': ^0.33.7
       temporal-polyfill: ^0.2.5
 
@@ -978,35 +967,44 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
-  '@nmtjs/application@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))':
+  '@nmtjs/application@0.4.2(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)':
     dependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/contract': 0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
-      '@nmtjs/type': 0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+      '@nmtjs/common': 0.4.2
+      '@nmtjs/contract': 0.4.2(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+      '@nmtjs/type': 0.4.2(@nmtjs/common@0.4.2)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
       pino: 9.4.0
       pino-pretty: 11.2.2
+    transitivePeerDependencies:
+      - '@sinclair/typebox'
+      - temporal-polyfill
 
   '@nmtjs/builder@https://codeload.github.com/neematajs/builder/tar.gz/a9139aa321ebf2054ce2f7d26e40a346338be149':
     dependencies:
       '@swc/wasm': 1.7.26
       glob: 11.0.0
 
-  '@nmtjs/client@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)))(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))':
+  '@nmtjs/client@0.4.2(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)':
     dependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/contract': 0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))
-      '@nmtjs/type': 0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+      '@nmtjs/common': 0.4.2
+      '@nmtjs/contract': 0.4.2(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+      '@nmtjs/type': 0.4.2(@nmtjs/common@0.4.2)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+    transitivePeerDependencies:
+      - '@sinclair/typebox'
+      - temporal-polyfill
 
-  '@nmtjs/common@0.3.8': {}
+  '@nmtjs/common@0.4.2': {}
 
-  '@nmtjs/contract@0.3.8(@nmtjs/common@0.3.8)(@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5))':
+  '@nmtjs/contract@0.4.2(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)':
     dependencies:
-      '@nmtjs/common': 0.3.8
-      '@nmtjs/type': 0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+      '@nmtjs/common': 0.4.2
+      '@nmtjs/type': 0.4.2(@nmtjs/common@0.4.2)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)
+    transitivePeerDependencies:
+      - '@sinclair/typebox'
+      - temporal-polyfill
 
-  '@nmtjs/type@0.3.8(@nmtjs/common@0.3.8)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)':
+  '@nmtjs/type@0.4.2(@nmtjs/common@0.4.2)(@sinclair/typebox@0.33.11)(temporal-polyfill@0.2.5)':
     dependencies:
-      '@nmtjs/common': 0.3.8
+      '@nmtjs/common': 0.4.2
       '@sinclair/typebox': 0.33.11
       temporal-polyfill: 0.2.5
 
